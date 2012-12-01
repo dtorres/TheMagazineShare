@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Upload a new Issue</title>
+	<link rel="stylesheet" href="/main.css">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript">
+		function addIssue() {
+			var issuesDiv = $("#issues");
+			var idx = issuesDiv.children().length;
+			
+			var html = "<div class=\"issue\"><label>Issue: </label>";
+			html += "<input type=\"file\" name=\"issue["+idx+"]\"/><span>(.zip file)</span><br/>";
+			html += "</div>";
+			
+			issuesDiv.append(html);
+		}
+		</script>
+</head>
+<body>
+	<h1>Upload a new issue</h1>
+	<form method="post" enctype="multipart/form-data">
+		<label>Authors:</label>
+		<input type="file" name="authors"/><span>(.plist file)</span><br/>
+		<h2>Issues</h2>
+		<div id="issues">
+			<div class="issue">
+				<label>Issue: </label>
+				<input type="file" name="issue[0]"/><span>(.zip file)</span><br/>
+			</div>
+		</div>
+		<a href="javascript:addIssue()">+ Add another issue</a><br/>
+		<input type="submit">
+	</form>
+</body>
+</html>
