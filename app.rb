@@ -2,10 +2,19 @@ require 'sinatra'
 require './issueTask.rb'
 require 'redis'
 require 'digest/sha1'
+require 'json'
 
 use Rack::Logger
+begin
+  services = JSON.parse(ENV['VCAP_SERVICES'])
+  redis_key = services.keys.select { |svc| svc =~ /redis/i }.first
+  rediscred = services[redis_key].first['credentials']
+  redis_conf = {:host => rediscred['hostname'], :port => rediscred['port'], :password => rediscred['password']}
+rescue
+  redis_conf = {}
+end
 
-redis = Redis.new
+redis = Redis.new redis_conf
 
 helpers do
   def logger
