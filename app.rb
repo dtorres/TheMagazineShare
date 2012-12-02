@@ -28,7 +28,6 @@ get '/:issueid/:article/key' do
     status 401
   else
     realWords = redis.hget("articles-words", params[:issueid]+"-"+params[:article])
-    puts realWords
     if (realWords.downcase == params[:words].downcase)
       key = Digest::SHA1.hexdigest request.ip+params[:article]
       key = key[0, 6].upcase
@@ -52,10 +51,12 @@ get '/' do
     template = ERB.new(File.read("index.html.erb"))
     begin
       issues = JSON.parse(File.read("issuesdb.json"))
+      issues.sort! do |a,b|
+        b["number"].to_i <=> a["number"].to_i
+      end
     rescue
       issues = []
     end
-    puts issues
     File.open("public/index.html", "w") do |file|
       file.write(template.result(binding))  
     end
