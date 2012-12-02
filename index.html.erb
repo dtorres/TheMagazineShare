@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="main.css">
+	<title>Share The Magazine</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript">
+	function showGatekeeper(lockedLink) {
+		var article = $(lockedLink).closest("article");
+		
+		if (article.has("form").length > 0) return; //Nothing to do here.
+		
+		var url = lockedLink.href.split("?")[0];
+		
+		html  = "<form action=\""+url+"/key\">";
+		html += 	"<label>Enter the last 4 words of the article</label>";
+		html +=		"<input name=\"words\"/>"
+		html +=		"<input type=\"submit\" value=\"Share!\"/>"
+		html +=	"</form>";
+		
+		article.append(html);
+	}
+	
+	$(document).ready(function(){
+		$("article h2 a").click(function(e){
+			var hasKey = /\?[^key]*key=/ig.test(this.href);
+			
+			if (!hasKey) {
+				e.preventDefault();
+				showGatekeeper(this)
+			}
+		});
+		
+		$("form").live("submit", function(){
+			var form = $(this);
+			var lastWords = form.children("input[name=words]").val();
+			$.get(form.attr("action"), "words="+lastWords, function(data){
+				if (data == "") {
+					alert("Nope, those aren't the words");
+					return;
+				}
+				var article = form.closest("article");
+				var aTitle = form.siblings("h2").children("a");
+				var newURL = aTitle.attr("href").split("?")[0] + "?key=" + data
+				
+				aTitle.attr("href", newURL);
+				form.remove();
+				article.append("<p class=\"shareNow\">You can share the article's link now</p>");
+			});
+			return false;
+		});
+	});
+	</script>
+</head>
+<body>
+	<header>
+		<h1 id="logo"><a href="/"><span>Share </span>The Magazine</a></h1>
+	</header>
+	<div id="content">
+		<% issues.each do |issue| %>
+		<details class="issue">
+			<summary>Issue <%= issue["number"] %> <time pubdate><%= issue["pubdate"] %></time></summary>
+			<% issue["articles"].each do |article| %>
+			<article>
+				<h2><a href="<%= issue["number"] + "/" + article["permalink"] %>"><%= article["title"] %></a></h2>
+				<summary><% article["summary"] %></summary>
+				<address class="author">By <a rel="author" href="<%= article["authorURL"] %>" title="<%= article["author"] %>"><%= article["author"] %></a></address>
+			</article>
+			<% end %>
+		</details>
+		<% end %>
+	</div>
+							
+</body>
+</html>

@@ -87,7 +87,7 @@ header h2 { margin-bottom: 2em; font-size: 1.5em; color: rgba(145, 153, 161, 1);
     line-height: 1.4;
     border-bottom: 1px solid #ccc;
     background: url('/Title.png') no-repeat top center;
-    height: 32px;
+    height: 64px;
     background-size: 256px 32px;
     width: 256px;
     margin: 0 auto;
@@ -122,7 +122,7 @@ hr {
     hr { background-image: url('/HR@2x.png'); }
 }
 
-#logo a { color: transparent; text-decoration: none; border: 0; }
+#logo a { color: #000; text-decoration: none; border: 0; }
 
 header { margin-bottom: 30px; }
 
@@ -260,4 +260,32 @@ figcaption {
     .articleissuelabel { margin-bottom: 1em; }
     .articleissuelabel img { display: none; }
     .articleissuelabel div { font-size: 1.2em; margin-left: 0; }
+}
+
+/* Share The Magazine additions */
+#logo span {
+	display: block;
+}
+
+details {
+	margin-bottom: 15px;
+}
+
+details.issue > summary {
+	outline:none;
+	font-size: 26px;
+} 
+.issue summary time {
+	display: block;
+	font-size: 70%;
+	color: #6a6a6a;
+}
+
+article form label {
+	font-style: italic;
+	font-weight: bold;
+}
+
+.hidden {
+	display: none;
 }

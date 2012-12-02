@@ -3,6 +3,7 @@ require './issueTask.rb'
 require 'redis'
 require 'digest/sha1'
 require 'json'
+require 'erb'
 
 use Rack::Logger
 begin
@@ -22,15 +23,12 @@ helpers do
   end
 end
 
-get '/uploadIssue' do
-  send_file 'uploadIssue.html'
-end
-
 get '/:issueid/:article/key' do
   if (!params[:words])
     status 401
   else
     realWords = redis.hget("articles-words", params[:issueid]+"-"+params[:article])
+    puts realWords
     if (realWords.downcase == params[:words].downcase)
       key = Digest::SHA1.hexdigest request.ip+params[:article]
       key = key[0, 6].upcase
@@ -46,6 +44,27 @@ get '/:issueid/:article' do
     return
   end
   send_file 'articles/'+params[:issueid]+"-"+params[:article]+".html"
+end
+
+get '/' do
+  if !File.exists?("public/index.html")
+    #Generate index.html
+    template = ERB.new(File.read("index.html.erb"))
+    begin
+      issues = JSON.parse(File.read("issuesdb.json"))
+    rescue
+      issues = []
+    end
+    puts issues
+    File.open("public/index.html", "w") do |file|
+      file.write(template.result(binding))  
+    end
+  end
+  send_file 'public/index.html'
+end
+
+get '/uploadIssue' do
+  send_file 'uploadIssue.html'
 end
 
 post '/uploadIssue' do
