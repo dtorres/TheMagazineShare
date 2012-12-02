@@ -65,7 +65,7 @@
 			<% issue["articles"].each do |article| %>
 			<article>
 				<h2><a href="<%= issue["number"] + "/" + article["permalink"] %>"><%= article["title"] %></a></h2>
-				<summary><% article["summary"] %></summary>
+				<summary><%= article["summary"] %></summary>
 				<address class="author">By <a rel="author" href="<%= article["authorURL"] %>" title="<%= article["author"] %>"><%= article["author"] %></a></address>
 			</article>
 			<% end %>
