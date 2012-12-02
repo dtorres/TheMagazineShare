@@ -4,6 +4,7 @@ require 'redis'
 require 'digest/sha1'
 require 'json'
 require 'erb'
+require 'set'
 
 use Rack::Logger
 begin
@@ -27,8 +28,11 @@ get '/:issueid/:article/key' do
   if (!params[:words])
     status 401
   else
-    realWords = redis.hget("articles-words", params[:issueid]+"-"+params[:article])
-    if (realWords.downcase == params[:words].downcase)
+    params[:words] = params[:words].gsub(/[\.,'\?]/, "").strip.downcase
+    wordsSet = Set.new params[:words].split(" ")
+    realWordsSet = Set.new redis.hget("articles-words", params[:issueid]+"-"+params[:article]).downcase.split(" ")
+    intersection = wordsSet & realWordsSet
+    if (intersection == realWordsSet)
       key = Digest::SHA1.hexdigest request.ip+params[:article]
       key = key[0, 6].upcase
       redis.sadd(params[:issueid]+"-"+params[:article], key)
