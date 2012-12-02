@@ -18,3 +18,5 @@ _yardoc
 doc/
 
 articles/
+public/index.html
+issuesdb.json

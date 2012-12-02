@@ -71,8 +71,6 @@ post '/uploadIssue' do
   if params[:authors]
       authors = params[:authors][:tempfile].path
       params[:issue].each_value {|issue|
-        logger.info authors
-        logger.info issue[:tempfile].path
         IssueTask.perform(authors, issue[:tempfile].path)
       }
   end
